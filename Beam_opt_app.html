@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<html>
+	<head>
+		<title>Sean's Blog</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!-- Header -->
+								<header id="header">
+									<!--<a href="index.html" class="logo"><strong>Sean's Blog</strong> <!--by Sean Yu</a>-->
+									<ul class="icons">
+                    <li><a href="#" class="icon brands fa-github"><span class="label">Instagram</span></a></li>
+                    <li><a href="#" class="icon brands fa-linkedin"><span class="label">Instagram</span></a></li>
+									</ul>
+								</header>
+							<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<header>
+											<h1>Beam Optimization App </h1>
+											<h6>Monday, January 11 2021</h6>
+										</header>
+										<br>
+										<p>
+											Over the summer I made this small app that optimizes the sizes of beams based on a set of gravity loads. 
+											The sizes of the beams were chosen from the standard AISC W shapes as these are typically used for beam structures, 
+											therefore the calculations were all done in imperial units. This app is hosted on Heroku, the link to the app can be found <a href="https://beamoptapp.herokuapp.com/">here</a> 
+											and the github repository with the code can be found <a href="https://github.com/sjy2129/Beam_Opt_app">here</a>. 
+											The following post goes through how the code works. 
+										</p>
+										<h3>Package Requirements</h3>
+										<p>To run this app the following packages must be installed.</p>
+										<ul>
+											<li>Streamlit (0.62.0)</li>
+											<li>Numpy (1.18.4)</li>
+											<li>Pandas (1.0.3)</li>
+											<li>Plotly (4.7.1)</li>
+										</ul>
+										<h3>Code</h3>
+										<p>The structural calculations were coded into various functions since there would be an iterative process to optimize the number of infill beams. 
+											Below is a brief explanation of each function used for the structural calculations.
+										<br><br>
+											The first function is the ‘beam_load’ function that calculates the largest moment and shear stress of a beam under a linear distributed load. The inputs for these functions are the magnitude of the dead and live distributed loads and the length of the beam. The tributary area is calculated separately. ASCE 7 load factors were used to calculate the stresses. Right now the code only includes dead loads and live loads but this function can easily be expanded to include other types of loads as well. A similar function was created to calculate the loads for the girders (which only have point loads at the points of the beams). The function for the girders does not calculate the load combinations as they are added into the input for the loads.
+										</p>
+										<code>
+											def beam_load(DL,LL,leng):<br>
+												&emsp;#Calculate load on beam given psf loads and Height in feet, outputs moment in kip-in and shear in kips <br>
+												&emsp;&emsp;lc1=1.4*DL<br>
+												&emsp;&emsp;lc2=1.2*DL+1.6*LL<br>
+												&emsp;&emsp;all_lc=[lc1,lc2]<br>
+												&emsp;&emsp;m_mom=max(all_lc)*(leng*12)**(2)/8/1000<br>
+												&emsp;&emsp;m_shear=max(all_lc)*leng*6/1000<br>
+												&emsp;&emsp;return[m_mom,m_shear]<br><br>
+											def girder_load(load,beam_no,Height):<br>
+												&emsp;#function that calculates girder load given load in kips and Height in feet, outputs moment in kip-in and shear in kips<br>
+												&emsp;shear=load*beam_no/2<br>
+												&emsp;length_b=Height*12/(beam_no+1)<br>
+												&emsp;moment=0<br>
+												&emsp;shear_count=shear<br>
+												&emsp;for i in range(beam_no):<br>
+												&emsp;&emsp;if shear_count-load<=0:<br>
+												&emsp;&emsp;&emsp;&emsp;moment = moment + length_b * shear_count<br>
+												&emsp;&emsp;&emsp;&emsp;break<br>
+												&emsp;&emsp;moment = moment + length_b*shear_count<br>
+												&emsp;&emsp;shear_count=shear_count-load<br>
+												&emsp;return [moment,shear]<br>
+										</code><br>
+										<p>
+											The next few functions (design, shear_design, add_self_weight) are used to size the beam based on AISC structural requirements.  The code is relatively long so below is a flowchart on how these functions are utilized. 
+											First the depth requirements are fulfilled. Then the moment strengths for each failure mode (Plastic, Elastic and Inelastic) are calculated for all of the possible sizes. 
+											The lightest section is seleted then is checked for shear and then checked again for both moment and shear after adding self-weight. If this section fulfills the demand requirements then it is used as the solution. If not it will loop back to check the next lightest section and its capacities until a satisfactory section is chosen.
+										</p>
+										<img src="images/Blog/Beam_opt_app/design_flowchart.png" alt="design flowchart" style="width:500px;" class="center">
+										<p>
+											The final function of the code optimizes the number of infill beams. Once again, since the code is quite long a flowchart of this function is shown below. Essentially this function just looks for a local optimum by designing the system for a number of beams and then checks whether adding an additional infill beam would decrease the overall weight. 
+										</p>
+										<img src="images/Blog/Beam_opt_app/optimization_flowchart.png" alt="optimize flowchart" style="width:500px;" class="center">
+										<p>The rest of the code is </p>
+									</div>
+								</section>							
+						</div>
+					</div>
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+               <!--Commented out until use in the future-->
+							<!-- Search
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>-->
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="index.html">Homepage</a></li>
+										<!--Blog tab if list needed <li>
+                      <span class="opener">Blog</span>
+                      <<ul>
+                        	<li><a href="#">Test</a></li>
+                      </ul>
+					</li>-->
+										<li><a href="Blognav.html">Blog</a></li>
+										<li><a href="Projectsnav.html">Projects</a></li>
+										<li>
+										</li>
+									</ul>
+								</nav>
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Sean Yu. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>. Hosted on Git</p>
+								</footer>
+						</div>
+					</div>
+			</div>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>
