@@ -1948,6 +1948,7 @@ button,
   -ms-transition: margin-left 0.5s ease, box-shadow 0.5s ease;
   transition: margin-left 0.5s ease, box-shadow 0.5s ease;
   background-color: #f5f6f7;
+  /* background-image: url(/images/20200105_134514.jpg); */
   font-size: 0.9em;
   position: relative;
   width: 26em; }
@@ -2096,6 +2097,7 @@ button,
   display: flex;
   border-bottom: solid 5px #99ccff;
   padding: 6em 0 1em 0;
+  /* background-image: url(/images/20200105_134514.jpg); */
   position: relative; }
   #header > * {
     -moz-flex: 1;

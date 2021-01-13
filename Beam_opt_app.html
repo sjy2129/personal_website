@@ -21,6 +21,7 @@
 							<!-- Header -->
 								<header id="header">
 									<!--<a href="index.html" class="logo"><strong>Sean's Blog</strong> <!--by Sean Yu</a>-->
+									<h4>Sean Yu's Website</h4>
 									<ul class="icons">
 										<li><a href="https://github.com/sjy2129" class="icon brands fa-github"><span class="label"></span></a></li>
 										<li><a href="https://www.linkedin.com/in/seanjyu/" class="icon brands fa-linkedin"><span class="label"></span></a></li>
@@ -35,7 +36,7 @@
 										</header>
 										<br>
 										<p>
-											Over the summer I made this small app that optimizes the sizes of beams based on a set of gravity loads. 
+											I made this small app that optimizes the sizes and number of infill of beams based on a set of gravity loads. Currently the 
 											The sizes of the beams were chosen from the standard AISC W shapes as these are typically used for beam structures, 
 											therefore the calculations were all done in imperial units. This app is hosted on Heroku, the link to the app can be found <a href="https://beamoptapp.herokuapp.com/">here</a> 
 											and the github repository with the code can be found <a href="https://github.com/sjy2129/Beam_Opt_app">here</a>. 
@@ -88,7 +89,8 @@
 											The final function of the code optimizes the number of infill beams. Once again, since the code is quite long a flowchart of this function is shown below. Essentially this function just looks for a local optimum by designing the system for a number of beams and then checks whether adding an additional infill beam would decrease the overall weight. 
 										</p>
 										<img src="images/Blog/Beam_opt_app/optimization_flowchart.png" alt="optimize flowchart" style="width:500px;" class="center">
-										<p>The rest of the code is </p>
+										<p>The last function visualizes the beam system by plotting them as lines on a graph. The graph was made using plotly. Then the rest of the code just creates the UI through streamlit and runs the . I haven't included the code in this post since it is relatively straight forward.</p>
+										
 									</div>
 								</section>							
 						</div>
