@@ -65,12 +65,12 @@
 										</ul>
 										<p> Simple supports were put at the bottom corners and for the structure to act like a truss the moment was released at both ends for members in the top and bottom chords and the webs. The vertical members had moment connections to allow the model to run without stability errors. </p>
 										<h3>Results</h3>
-										<div class="center"><img src="/images/Blog/Truss_opt/crop_1_16.gif" style="width:500px"><br>
+										<div class="center"><img src="images/Blog/Truss_opt/crop_1_16.gif" style="width:500px"><br>
 											 <sub style="margin-left:15em"> GIF of simulation running</sub>
 										</div>
 										<br>
 										<p>The model was run with 25 designs per generation, 10 generations with a mutation rate of 0.1. These numbers were experimented with before coming to this combination to make sure that the model would come to the same optimal solution. The following plot shows the mass against difference in displacement from target for the structure under a load of 30KN/m. The solutions on the pareto optimum are highlighted with a darker opaque grey color. Also, to make the plot cleaner, solutions that did not pass the constraints were not plotted.</p>
-										<img src="/images/Blog/Truss_opt/truss_opt_1_disp_vs_mass_1.PNG" style="width:800px">
+										<img src="images/Blog/Truss_opt/truss_opt_1_disp_vs_mass_1.PNG" style="width:800px">
 										<p>For this loading, the configuration with the smallest difference in displacment was 5 bays using UB203x133x25 (0.0397 cm displacement difference, 1695.6 kg) but the configuration of 2 bays with size UB127x76x13 had a slightly higher displacement difference but much lower mass (0.0684 cm displacement difference, 1424.95 kg). The results by themselves are not that impressive as they will change given different loads but it is interesting to see that the model was able to find various optimums. However, both the input variables, number of bays and member size, are not continuous causing the search space to be relatively small. Therefore, the genetic algorithm may not be the best way to solve this problem.</p>
 										<h2>Optimizing truss webs</h2>
 										<p>In this exploration the following was changed to optimize the structure:</p>
@@ -83,14 +83,14 @@
 											<li>The number of bays - Also to limit the search space the number of bays was kept at 10</li>
 										</ul>
 										<p>This time the supports were put at the top and bottom left corners. Also, to keep the model stable the top and bottom chord and the vertical at the end had rigid connections. The image below shows the model showing all rigidly connected members with the loading and boundary conditions.</p>
-										<div class="center"><img src="/images/Blog/Truss_opt/truss_opt_2_rigid.PNG" style="width:500px"><br>
+										<div class="center"><img src="images/Blog/Truss_opt/truss_opt_2_rigid.PNG" style="width:500px"><br>
 										<sub style="margin-left:10em"> Rigidly connected members with loads applied</sub></div>
 										<br>
 										<h3>Results</h3>
 										<p>The model was run with 75 designs per generation, 25 generations and a mutation rate of 0.05. The following plot shows the mass against difference in displacement from target for the structure under a load of 5KN/m. Once again, the pareto optimum have a darker color and also solutions that did not meet the constraints were not plotted. Unfortunately due to the Discover plotting tool taking into account non complaint solutions, the y-axis is disproportionatly skewed. However, many lightly shaded dots can still be seen near the bottom of the chart.</p>
-										<img src="/images/Blog/Truss_opt/truss_opt_2_disp_vs_mass_2.PNG" style="width:900px"><br>
+										<img src="images/Blog/Truss_opt/truss_opt_2_disp_vs_mass_2.PNG" style="width:900px"><br>
 										<p>The following image shows the solution with the lowest mass (1804.26 kg) and very small difference in target displacement (0.1507 cm).</p>
-										<div class="center"><img src="/images/Blog/Truss_opt/truss_opt_2_sol.PNG" style="width:500px"></div><br>
+										<div class="center"><img src="images/Blog/Truss_opt/truss_opt_2_sol.PNG" style="width:500px"></div><br>
 										<p>As compared to finding the optimal number of bays this problem has a much larger solution space and is the genetic algorithm is more suited to solve this problem. Due to the large search space the number of designs per generation and number of generations was much larger than the previous problem. Running this model with the same parameters might not achieve the exact same results, but something similar (a zig-zag type truss).</p>
 										<h2>Conclusion and further explorations</h2>
 										<p>Overall, this exploration was quite fun. I was able to learn more about using grasshopper and discover. The benefit of using grasshopper and the various plugins is that the solution can be easily visualized and  In terms of industry use, I believe, with a bit of polish, these models could be useful for preliminary design. There are still many things that could be improved or considered in both of these problems. In particular, the tuning of the parameters of the genetic algorithm and also increasing the number objectives. One objective that I think should be considered in the future is to maximize utilization on all the members. <br><br>
