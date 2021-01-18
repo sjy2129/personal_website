@@ -31,12 +31,13 @@
 								<section id="banner">
 									<div class="content">
 										<header>
-											<h1>Beam Optimization App </h1>
+											<h1>Beam Optimization App</h1>
 											<h6>Monday, January 11 2021</h6>
 										</header>
 										<br>
+										<img src="/images/Blog/Beam_opt_app/app_screenshot_1.png" alt="app_screenshot" style="width:550px;" class="center"><br>
 										<p>
-											I made this small app that optimizes the sizes and number of infill of beams based on a set of gravity loads. Currently the 
+											I made this small app that optimizes the sizes and number of infill of beams based on a set of gravity loads. Currently the app only includes dead loads and live loads but this function can easily be expanded to include other types of loads as well.
 											The sizes of the beams were chosen from the standard AISC W shapes as these are typically used for beam structures, 
 											therefore the calculations were all done in imperial units. This app is hosted on Heroku, the link to the app can be found <a href="https://beamoptapp.herokuapp.com/">here</a> 
 											and the github repository with the code can be found <a href="https://github.com/sjy2129/Beam_Opt_app">here</a>. 
@@ -54,7 +55,7 @@
 										<p>The structural calculations were coded into various functions since there would be an iterative process to optimize the number of infill beams. 
 											Below is a brief explanation of each function used for the structural calculations.
 										<br><br>
-											The first function is the ‘beam_load’ function that calculates the largest moment and shear stress of a beam under a linear distributed load. The inputs for these functions are the magnitude of the dead and live distributed loads and the length of the beam. The tributary area is calculated separately. ASCE 7 load factors were used to calculate the stresses. Right now the code only includes dead loads and live loads but this function can easily be expanded to include other types of loads as well. A similar function was created to calculate the loads for the girders (which only have point loads at the points of the beams). The function for the girders does not calculate the load combinations as they are added into the input for the loads.
+											The first function is the ‘beam_load’ function that calculates the largest moment and shear stress of a beam under a linear distributed load. The inputs for these functions are the magnitude of the dead and live distributed loads and the length of the beam. The tributary area is calculated separately. ASCE 7 load factors were used to calculate the stresses. A similar function was created to calculate the loads for the girders (which only have point loads at the points of the beams). The function for the girders does not calculate the load combinations as they are added into the input for the loads.
 										</p>
 										<code>
 											def beam_load(DL,LL,leng):<br>
@@ -80,16 +81,18 @@
 												&emsp;return [moment,shear]<br>
 										</code><br>
 										<p>
-											The next few functions (design, shear_design, add_self_weight) are used to size the beam based on AISC structural requirements.  The code is relatively long so below is a flowchart on how these functions are utilized. 
+											The next few functions (design, shear_design, add_self_weight) are used to size the beam based on AISC structural requirements.  The code is relatively long so below is a flowchart on how these functions are utilized.
 											First the depth requirements are fulfilled. Then the moment strengths for each failure mode (Plastic, Elastic and Inelastic) are calculated for all of the possible sizes. 
-											The lightest section is seleted then is checked for shear and then checked again for both moment and shear after adding self-weight. If this section fulfills the demand requirements then it is used as the solution. If not it will loop back to check the next lightest section and its capacities until a satisfactory section is chosen.
+											The lightest section is seleted then is checked for shear and then checked again for both moment and shear after adding self-weight. If this section fulfills the demand requirements then it is used as the solution. If not it will loop back to check the next lightest section and its capacities until a satisfactory section is chosen. 
 										</p>
 										<img src="images/Blog/Beam_opt_app/design_flowchart.png" alt="design flowchart" style="width:500px;" class="center">
 										<p>
-											The final function of the code optimizes the number of infill beams. Once again, since the code is quite long a flowchart of this function is shown below. Essentially this function just looks for a local optimum by designing the system for a number of beams and then checks whether adding an additional infill beam would decrease the overall weight. 
+											The next function (frame_optimizer) of the code optimizes the number of infill beams. Once again, since the code is quite long so a flowchart of this function is shown below. Essentially, this function employs a recursive algorithm. The input for this function are the area loads and dimension of the frame. The function takes the inputs and finds the shorter side thus finding the length of the beam. Then the function first designs the system for a single infill beam and then just looks for a local optimum by incrementally increasing the number of infill beams and designing the system until the weight is larger than the previous system.
 										</p>
 										<img src="images/Blog/Beam_opt_app/optimization_flowchart.png" alt="optimize flowchart" style="width:500px;" class="center">
-										<p>The last function visualizes the beam system by plotting them as lines on a graph. The graph was made using plotly. Then the rest of the code just creates the UI through streamlit and runs the . I haven't included the code in this post since it is relatively straight forward.</p>
+										<p>The last function visualizes the beam system by plotting them as lines on a graph. The graph was made using plotly. Then the rest of the code just creates the UI through streamlit and runs the functions I mentioned above. I haven't included the code in this post since it is relatively straight forward.</p>
+										<h3>Future Considerations</h3>
+										<p>As mentioned above, other kinds of gravity loads, such as snow or roof, can be added in the future. This is relatively easy, since they act in the same direction. Similarly, considering moment connections would also be trivial. Another future consideration could be designing for dynamics and considering the natural frequency of the framing system.</p>
 										
 									</div>
 								</section>							

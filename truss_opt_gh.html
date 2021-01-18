@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Sean's Blog</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!-- Header -->
+								<header id="header">
+									<!--<a href="index.html" class="logo"><strong>Sean's Blog</strong> <!--by Sean Yu</a>-->
+									<h4>Sean Yu's Website</h4>
+									<ul class="icons">
+										<li><a href="https://github.com/sjy2129" class="icon brands fa-github"><span class="label"></span></a></li>
+										<li><a href="https://www.linkedin.com/in/seanjyu/" class="icon brands fa-linkedin"><span class="label"></span></a></li>
+									</ul>
+								</header>
+							<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<header>
+											<h1>Truss Optimization Exploration in Grasshopper using Discover and Karamba3D</h1>
+											<h6>Monday, January 18 2021</h6>
+											<!--<p>Welcome to Sean's Blog</p>-->
+										</header>
+										<p>In my last semester at Columbia University I was able to sit in a class on generative design in architecture. Through this course I was able to learn more about the grasshopper plugin <a href="https://www.food4rhino.com/app/discover"> Discover </a>  which was made by the professor who taught the class (Danil Nagy). I wanted to apply this plugin to a structural engineering project so explored optimizing trusses. 
+										</p><br>
+										<p>Trusses are structures that can only have axial loads and are generally simple structures. However, when it comes to optimizing trusses it can get quite complicated depending on the number of variables being optimized (such as optimizing node placement). In this quick exploration I tried to optimize two different variables, first the number of bays and secondly the web topology. This exercise was done using Discover and Karamba3d in Grasshopper and Rhino. The grasshopper files can be found in <a href="https://github.com/sjy2129/truss_opt_grasshopper"> this </a> github repository. </p><br>
+										<p><a href="https://medium.com/generative-design/evolving-design-b0941a17b759">Here</a> is an article on how the genetic algorithm works. To summarize, the generative design algorithm works by first creating a generation of designs and finding the fitness score of each design based on the given constraints and objectives. Then the more ‘fit’ designs are combined with each other to create another generation of designs, some are given mutations such that the evolution does not get stuck. In Discover the number of designs per generation, the number of generations and the mutation rate can all be determined by the user. </p>
+										<h4>Objectives and Constraints</h4><br>
+										<p>For both of these explorations the following were the criteria for the optimization:</p>
+										<ul>
+											<li>Minimize mass - Try to find structure with the least mass</li>
+											<li>Minimize difference between maximum and target displacement - The target displacement was set to the length of the truss divided by 500, although this can easily be changed in grasshopper</li>
+										</ul>
+										<p>The reason that the minimum displacement is not used as an objective is that this is not a design criteria and having this as an objective would encourage inefficient designs.<br><br> The following constraints were put on the models for both explorations:</p>
+										<ul>
+											<li>Length and height - Total length of the truss was chosen to be 20 meters long and 3 meters tall.</li>
+											<li>Loading conditions - Both models were loaded on the top nodes and the total load was kept constant, however the total loads were experimented with</li>
+											<li>Material - Only steel members were used</li>
+											<li>Maximum utilization -  No element could have a utilization percentage over 100% i.e. no element can structurally fail</li>
+										</ul>
+										<h2>Optimizing number of bays</h2>
+										<p>For this exploration, the following variables were changed to optimize the solution:</p>
+										<ul>
+											<li>Number of bays - The number of bays were varied which also meant that the angle and the lengths of the crosses also varied.
+											</li>
+											<li>Cross section - The cross section was chosen out of a selection of 91 I sections (UK Universal Beams)</li>
+										</ul>
+										<p>Also, on top of the previously mentioned constraints the following variables were kept constant:<br></p>
+										<ul>
+											<li>Truss pattern - X braces were used in each bay</li>
+											<li>Maximum number of bays </li>
+										</ul>
+										<p> Simple supports were put at the bottom corners and for the structure to act like a truss the moment was released at both ends for members in the top and bottom chords and the webs. The vertical members had moment connections to allow the model to run without stability errors. </p>
+										<h3>Results</h3>
+										<img src="/images/Blog/Truss_opt/crop_1_16.gif" class="center">
+										<sub><center>GIF of simulation running</center></sub><br>
+										<p>The model was run with 25 designs per generation, 10 generations with a mutation rate of 0.1. These numbers were experimented with before coming to this combination to make sure that the model would come to the same optimal solution. The following plot shows the mass against difference in displacement from target for the structure under a load of 30KN/m. The solutions on the pareto optimum are highlighted with a darker opaque grey color. Also, to make the plot cleaner, solutions that did not pass the constraints were not plotted.</p>
+										<img src="/images/Blog/Truss_opt/truss_opt_1_disp_vs_mass_1.PNG"class="center">
+										<p>For this loading, the configuration with the smallest difference in displacment was 5 bays using UB203x133x25 (0.0397 cm displacement difference, 1695.6 kg) but the configuration of 2 bays with size UB127x76x13 had a slightly higher displacement difference but much lower mass (0.0684 cm displacement difference, 1424.95 kg). The results by themselves are not that impressive as they will change given different loads but it is interesting to see that the model was able to find various optimums. However, both the input variables, number of bays and member size, are not continuous causing the search space to be relatively small. Therefore, the genetic algorithm may not be the best way to solve this problem.</p>
+										<h2>Optimizing truss webs</h2>
+										<p>In this exploration the following was changed to optimize the structure:</p>
+										<ul>
+											<li>The configuration of the truss web members were changed through each design. At each bay any combination of three possible members that could exist, a diagonal from the top left to bottom right, a diagonal from top right to bottom left and a cross and a vertical from the top right to the bottom right (other than the end vertical). </li>
+										</ul>
+										<p>The following were additional constraints for this model:</p>
+										<ul>
+											<li>Cross section - A cross section of UB 1016x305x584 was used to limit the search space</li>
+											<li>The number of bays - Also to limit the search space the number of bays was kept at 10</li>
+										</ul>
+										<p>This time the supports were put at the top and bottom left corners. Also, to keep the model stable the top and bottom chord and the vertical at the end had rigid connections. The image below shows the model showing all rigidly connected members with the loading and boundary conditions.</p>
+										<img src="/images/Blog/Truss_opt/truss_opt_2_rigid.PNG" class="center">
+										<sub><center>Rigidly connected members with loads applied</center></sub><br>
+										<h3>Results</h3>
+										<p>The model was run with 75 designs per generation, 25 generations and a mutation rate of 0.05. The following plot shows the mass against difference in displacement from target for the structure under a load of 5KN/m. Once again, the pareto optimum have a darker color and also solutions that did not meet the constraints were not plotted. Unfortunately due to the Discover plotting tool taking into account non complaint solutions, the y-axis is disproportionatly skewed. However, many lightly shaded dots can still be seen near the bottom of the chart.</p>
+										<img src="/images/Blog/Truss_opt/truss_opt_2_disp_vs_mass_2.PNG"  class="center"><br>
+										<p>The following image shows the solution with the lowest mass (1804.26 kg) and very small difference in target displacement (0.1507 cm).</p>
+										<img src="/images/Blog/Truss_opt/truss_opt_2_sol.PNG"  class="center"><br>
+										<p>As compared to finding the optimal number of bays this problem has a much larger solution space and is the genetic algorithm is more suited to solve this problem. Due to the large search space the number of designs per generation and number of generations was much larger than the previous problem. Running this model with the same parameters might not achieve the exact same results, but something similar (a zig-zag type truss).</p>
+										<h2>Conclusion and further explorations</h2>
+										<p>Overall, this exploration was quite fun. I was able to learn more about using grasshopper and discover. The benefit of using grasshopper and the various plugins is that the solution can be easily visualized and  In terms of industry use, I believe, with a bit of polish, these models could be useful for preliminary design. There are still many things that could be improved or considered in both of these problems. In particular, the tuning of the parameters of the genetic algorithm and also increasing the number objectives. One objective that I think should be considered in the future is to maximize utilization on all the members. <br><br>
+										For optimizing the number of bays, although the genetic algorithm might be able to find optimum solutions I don’t think it is the best algorithm to solve this problem. To better make use of the benefits of the genetic algorithm this problem could be made more complicated by including the height of the truss as part of the problem. A quick recursive algorithm could be enough to find a local minimum for this problem.<br><br>
+										For optimizing the web members, the parameters for the genetic algorithm could be further tuned to reach the optimum solution faster. Also, it would be interesting to include the member size as an input to this model. <br><br>
+										In the future I would like to explore adapting these models to design lateral force resisting systems, such as a diagrid system. This would include adding loading in the orthogonal direction and different deflection objectives.
+										</p>
+
+									</div>
+								</section>							
+						</div>
+					</div>
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+               <!--Commented out until use in the future-->
+							<!-- Search
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>-->
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="index.html">Homepage</a></li>
+										<!--Blog tab if list needed <li>
+                      <span class="opener">Blog</span>
+                      <<ul>
+                        	<li><a href="#">Test</a></li>
+                      </ul>
+					</li>-->
+										<li><a href="Blognav.html">Blog</a></li>
+										<!-- <li><a href="Projectsnav.html">Projects</a></li>
+										<li> -->
+										</li>
+									</ul>
+								</nav>
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Sean Yu. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>. Hosted on Git</p>
+								</footer>
+						</div>
+					</div>
+			</div>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>
